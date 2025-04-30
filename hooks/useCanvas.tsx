@@ -27,7 +27,8 @@ import {
   uploadElements,
 } from "@/utils/element";
 import useKeys from "./useKeys";
-import type { Corner, Element } from "@/types";
+import type { Corner, Element, Translate } from "@/types";
+import { socket } from "@/lib/socket";
 
 export default function useCanvas() {
   const {
@@ -49,6 +50,7 @@ export default function useCanvas() {
     setSelectedElement,
     undo,
     redo,
+    session,
   } = useAppContext();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -526,6 +528,43 @@ export default function useCanvas() {
       setTextInput(element.text || "");
     }
   };
+
+  // Add canvas state synchronization
+  useEffect(() => {
+    if (!session) return;
+
+    const handleCanvasState = (state: {
+      scale: number;
+      translate: Translate;
+    }) => {
+      onZoom(state.scale - scale);
+      setTranslate((prevState) => ({
+        ...prevState,
+        x: state.translate.x,
+        y: state.translate.y,
+      }));
+    };
+
+    socket.on("setCanvasState", handleCanvasState);
+
+    return () => {
+      socket.off("setCanvasState", handleCanvasState);
+    };
+  }, [session, scale, translate, onZoom, setTranslate]);
+
+  // Emit canvas state changes
+  useEffect(() => {
+    if (!session) return;
+
+    const state = {
+      scale,
+      translate: {
+        x: translate.x,
+        y: translate.y,
+      },
+    };
+    socket.emit("updateCanvasState", { state, room: session });
+  }, [session, scale, translate]);
 
   return {
     canvasRef,

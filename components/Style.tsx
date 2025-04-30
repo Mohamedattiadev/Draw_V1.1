@@ -21,48 +21,50 @@ interface StyleProps {
   selectedElement: Element | StyleType | null;
 }
 
+interface ExtendedStyle extends StyleType {
+  fontSize?: number;
+  fontFamily?: string;
+  fontWeight?: string;
+}
+
 export default function Style({ selectedElement }: StyleProps) {
   const { elements, setElements, setSelectedElement, setStyle } =
     useAppContext();
-  const [elementStyle, setElementStyle] = useState<StyleType>({
+  const [stylesStates, setStylesStates] = useState<ExtendedStyle>({
+    strokeColor: (selectedElement as Element)?.strokeColor || "",
     fill: (selectedElement as Element)?.fill || "",
     strokeWidth: (selectedElement as Element)?.strokeWidth || 0,
     strokeStyle: (selectedElement as Element)?.strokeStyle || "solid",
-    strokeColor: (selectedElement as Element)?.strokeColor || "",
     opacity: (selectedElement as Element)?.opacity || 100,
+    fontSize: (selectedElement as Element)?.fontSize || 16,
+    fontFamily: (selectedElement as Element)?.fontFamily || "Arial",
+    fontWeight: (selectedElement as Element)?.fontWeight || "normal",
   });
-  const [fontSize, setFontSize] = useState(selectedElement?.fontSize || 16);
-  const [fontFamily, setFontFamily] = useState(
-    selectedElement?.fontFamily || "Arial"
-  );
-  const [fontWeight, setFontWeight] = useState(
-    selectedElement?.fontWeight || "normal"
-  );
 
   useEffect(() => {
-    setElementStyle({
-      fill: (selectedElement as Element)?.fill || "",
-      strokeWidth: (selectedElement as Element)?.strokeWidth || 0,
-      strokeStyle: (selectedElement as Element)?.strokeStyle || "solid",
-      strokeColor: (selectedElement as Element)?.strokeColor || "",
-      opacity: (selectedElement as Element)?.opacity || 100,
-    });
-    if (selectedElement?.tool === "text") {
-      setFontSize(selectedElement.fontSize || 16);
-      setFontFamily(selectedElement.fontFamily || "Arial");
-      setFontWeight(selectedElement.fontWeight || "normal");
+    if (selectedElement && "id" in selectedElement) {
+      setStylesStates({
+        strokeColor: selectedElement.strokeColor,
+        fill: selectedElement.fill,
+        strokeWidth: selectedElement.strokeWidth,
+        strokeStyle: selectedElement.strokeStyle,
+        opacity: selectedElement.opacity,
+        fontSize: selectedElement.fontSize,
+        fontFamily: selectedElement.fontFamily,
+        fontWeight: selectedElement.fontWeight,
+      });
     }
   }, [selectedElement]);
 
-  const setStylesStates = (styleObject: Partial<StyleType>) => {
-    setElementStyle((prevState) => ({ ...prevState, ...styleObject }));
+  const updateStyles = (styleObject: Partial<ExtendedStyle>) => {
+    setStylesStates((prevState) => ({ ...prevState, ...styleObject }));
     setStyle((prevState) => ({ ...prevState, ...styleObject }));
   };
 
   const handleFontSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSize = parseInt(e.target.value);
-    setFontSize(newSize);
-    if (selectedElement) {
+    updateStyles({ fontSize: newSize });
+    if (selectedElement && "id" in selectedElement) {
       updateElement(
         selectedElement.id,
         { fontSize: newSize },
@@ -75,8 +77,8 @@ export default function Style({ selectedElement }: StyleProps) {
 
   const handleFontFamilyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newFamily = e.target.value;
-    setFontFamily(newFamily);
-    if (selectedElement) {
+    updateStyles({ fontFamily: newFamily });
+    if (selectedElement && "id" in selectedElement) {
       updateElement(
         selectedElement.id,
         { fontFamily: newFamily },
@@ -89,8 +91,8 @@ export default function Style({ selectedElement }: StyleProps) {
 
   const handleFontWeightChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newWeight = e.target.value;
-    setFontWeight(newWeight);
-    if (selectedElement) {
+    updateStyles({ fontWeight: newWeight });
+    if (selectedElement && "id" in selectedElement) {
       updateElement(
         selectedElement.id,
         { fontWeight: newWeight },
@@ -101,7 +103,20 @@ export default function Style({ selectedElement }: StyleProps) {
     }
   };
 
-  if (!selectedElement) return null;
+  if (!selectedElement || !("id" in selectedElement)) {
+    return null;
+  }
+
+  const elementStyle = {
+    strokeColor: stylesStates.strokeColor,
+    fill: stylesStates.fill,
+    strokeWidth: stylesStates.strokeWidth,
+    strokeStyle: stylesStates.strokeStyle,
+    opacity: stylesStates.opacity,
+    fontSize: stylesStates.fontSize,
+    fontFamily: stylesStates.fontFamily,
+    fontWeight: stylesStates.fontWeight,
+  };
 
   return (
     <section className="styleOptions">
@@ -112,14 +127,14 @@ export default function Style({ selectedElement }: StyleProps) {
             <button
               type="button"
               title={color}
-              style={{ "--color": color } as React.CSSProperties}
+              style={{ backgroundColor: color }}
               key={index}
               className={
                 "itemButton color" +
                 (color === elementStyle.strokeColor ? " selected" : "")
               }
               onClick={() => {
-                setStylesStates({ strokeColor: color });
+                updateStyles({ strokeColor: color });
                 if ("id" in selectedElement) {
                   updateElement(
                     selectedElement.id,
@@ -146,10 +161,10 @@ export default function Style({ selectedElement }: StyleProps) {
                 "itemButton color" +
                 (fill === elementStyle.fill ? " selected" : "")
               }
-              style={{ "--color": fill } as React.CSSProperties}
+              style={{ backgroundColor: fill }}
               key={index}
               onClick={() => {
-                setStylesStates({ fill });
+                updateStyles({ fill });
                 if ("id" in selectedElement) {
                   updateElement(
                     selectedElement.id,
@@ -177,7 +192,7 @@ export default function Style({ selectedElement }: StyleProps) {
             step="1"
             onChange={({ target }) => {
               const value = minmax(+target.value, [0, 20]);
-              setStylesStates({ strokeWidth: value });
+              updateStyles({ strokeWidth: value });
               if ("id" in selectedElement) {
                 updateElement(
                   selectedElement.id,
@@ -205,7 +220,7 @@ export default function Style({ selectedElement }: StyleProps) {
               }
               key={index}
               onClick={() => {
-                setStylesStates({ strokeStyle: style.slug });
+                updateStyles({ strokeStyle: style.slug });
                 if ("id" in selectedElement) {
                   updateElement(
                     selectedElement.id,
@@ -235,7 +250,7 @@ export default function Style({ selectedElement }: StyleProps) {
             step="10"
             onChange={({ target }) => {
               const value = minmax(+target.value, [0, 100]);
-              setStylesStates({
+              updateStyles({
                 opacity: value,
               });
               if ("id" in selectedElement) {
@@ -347,7 +362,7 @@ export default function Style({ selectedElement }: StyleProps) {
             <label>Font Size</label>
             <input
               type="number"
-              value={fontSize}
+              value={elementStyle.fontSize}
               onChange={handleFontSizeChange}
               min="8"
               max="72"
@@ -355,7 +370,10 @@ export default function Style({ selectedElement }: StyleProps) {
           </div>
           <div className="style-group flex gap-2">
             <label>Font Family</label>
-            <select value={fontFamily} onChange={handleFontFamilyChange}>
+            <select
+              value={elementStyle.fontFamily}
+              onChange={handleFontFamilyChange}
+            >
               <option value="Arial">Arial</option>
               <option value="Times New Roman">Times New Roman</option>
               <option value="Courier New">Courier New</option>
@@ -364,7 +382,10 @@ export default function Style({ selectedElement }: StyleProps) {
           </div>
           <div className="style-group flex gap-2">
             <label>Font Weight</label>
-            <select value={fontWeight} onChange={handleFontWeightChange}>
+            <select
+              value={elementStyle.fontWeight}
+              onChange={handleFontWeightChange}
+            >
               <option value="normal">Normal</option>
               <option value="bold">Bold</option>
             </select>

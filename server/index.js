@@ -31,9 +31,16 @@ const io = new Server(server, {
   transports: ["websocket", "polling"],
 });
 
+// Store canvas state for each room
+const roomStates = new Map();
+
 io.on("connection", (socket) => {
   socket.on("join", (room) => {
     socket.join(room);
+    // Send current room state to the new user
+    if (roomStates.has(room)) {
+      socket.emit("setCanvasState", roomStates.get(room));
+    }
   });
 
   socket.on("leave", (room) => {
@@ -42,6 +49,11 @@ io.on("connection", (socket) => {
 
   socket.on("getElements", ({ elements, room }) => {
     io.in(room).emit("setElements", elements);
+  });
+
+  socket.on("updateCanvasState", ({ state, room }) => {
+    roomStates.set(room, state);
+    socket.to(room).emit("setCanvasState", state);
   });
 });
 
