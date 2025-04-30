@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import useCanvas from "@/hooks/useCanvas";
+import { Input } from "@/components/ui/input";
 
 export default function Canvas() {
   const [isMounted, setIsMounted] = useState(false);
@@ -12,6 +13,9 @@ export default function Canvas() {
     handleMouseMove,
     handleMouseUp,
     handleWheel,
+    isEditing,
+    textInput,
+    selectedElement,
   } = useCanvas();
 
   useEffect(() => {
@@ -34,6 +38,22 @@ export default function Canvas() {
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
       />
+      {isEditing && (
+        <Input
+          type="text"
+          value={textInput}
+          onChange={(e) => setTextInput(e.target.value)}
+          style={{
+            position: "absolute",
+            left: selectedElement?.x1,
+            top: selectedElement?.y1,
+            width: "100px",
+            height: "30px",
+            zIndex: 1000,
+          }}
+          autoFocus
+        />
+      )}
     </>
   );
 }

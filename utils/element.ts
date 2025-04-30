@@ -43,6 +43,12 @@ export function isWithinElement(x: number, y: number, element: Element): boolean
       const maxY = Math.max(y1, y2) + strokeWidth / 2
 
       return x >= minX && x <= maxX && y >= minY && y <= maxY
+    case "text":
+      const textMinX = Math.min(x1, x2)
+      const textMaxX = Math.max(x1, x2)
+      const textMinY = Math.min(y1, y2)
+      const textMaxY = Math.max(y1, y2)
+      return x >= textMinX && x <= textMaxX && y >= textMinY && y <= textMaxY
     default:
       return false
   }

@@ -1,6 +1,15 @@
 import type { ReactNode } from "react"
 
-export type ToolType = "selection" | "hand" | "rectangle" | "diamond" | "circle" | "arrow" | "line" | "lock"
+export type ToolType =
+  | "selection"
+  | "hand"
+  | "lock"
+  | "rectangle"
+  | "diamond"
+  | "circle"
+  | "arrow"
+  | "line"
+  | "text"
 
 export interface Tool {
   slug: ToolType
@@ -23,6 +32,10 @@ export interface Element {
   opacity: number
   offsetX?: number
   offsetY?: number
+  text?: string
+  fontSize?: number
+  fontFamily?: string
+  fontWeight?: string
 }
 
 export interface Style {

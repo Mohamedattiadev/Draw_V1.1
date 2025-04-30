@@ -173,7 +173,7 @@ export function drawFocuse(element: Element, context: CanvasRenderingContext2D, 
 
 export function draw(element: Element, context: CanvasRenderingContext2D): void {
   context.beginPath()
-  const { tool, x1, y1, x2, y2, strokeWidth, strokeColor, strokeStyle, fill, opacity } = element
+  const { tool, x1, y1, x2, y2, strokeWidth, strokeColor, strokeStyle, fill, opacity, text, fontSize, fontFamily, fontWeight } = element
 
   context.lineWidth = strokeWidth
   context.strokeStyle = rgba(strokeColor, opacity)
@@ -182,6 +182,16 @@ export function draw(element: Element, context: CanvasRenderingContext2D): void 
   if (strokeStyle === "dashed") context.setLineDash([strokeWidth * 2, strokeWidth * 2])
   if (strokeStyle === "dotted") context.setLineDash([strokeWidth, strokeWidth])
   if (strokeStyle === "solid") context.setLineDash([0, 0])
+
+  if (tool === "text") {
+    context.font = `${fontWeight || "normal"} ${fontSize || 16}px ${fontFamily || "Arial"}`;
+    context.fillStyle = rgba(strokeColor, opacity);
+    if (text) {
+      context.fillText(text, x1, y1 + (fontSize || 16));
+    }
+    context.closePath();
+    return;
+  }
 
   if (typeof shapes[tool] === 'function') {
     shapes[tool](x1, y1, x2, y2, context)
