@@ -342,8 +342,8 @@ export default function Style({ selectedElement }: StyleProps) {
         </React.Fragment>
       )}
       {selectedElement?.tool === "text" && (
-        <div className="text-style">
-          <div className="style-group">
+        <div className="text-style flex flex-col gap-2">
+          <div className="style-group flex gap-2">
             <label>Font Size</label>
             <input
               type="number"
@@ -353,7 +353,7 @@ export default function Style({ selectedElement }: StyleProps) {
               max="72"
             />
           </div>
-          <div className="style-group">
+          <div className="style-group flex gap-2">
             <label>Font Family</label>
             <select value={fontFamily} onChange={handleFontFamilyChange}>
               <option value="Arial">Arial</option>
@@ -362,7 +362,7 @@ export default function Style({ selectedElement }: StyleProps) {
               <option value="Georgia">Georgia</option>
             </select>
           </div>
-          <div className="style-group">
+          <div className="style-group flex gap-2">
             <label>Font Weight</label>
             <select value={fontWeight} onChange={handleFontWeightChange}>
               <option value="normal">Normal</option>
