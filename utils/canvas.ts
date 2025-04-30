@@ -205,24 +205,30 @@ export function draw(element: Element, context: CanvasRenderingContext2D): void 
   if (strokeWidth > 0) context.stroke()
 }
 
-function rgba(color: string, opacity: number): string {
-  if (color === "transparent") return "transparent"
-
-  // Accept both rgb and rgba formats
-  const matches = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d*\.?\d+))?\)$/)
-  if (!matches) {
-    throw new Error("Invalid color format. Please provide a color in RGB or RGBA format.")
+function rgba(color: string | undefined | null, opacity: number | undefined | null): string {
+  // Normalize opacity: if > 1, assume it's 0-100 and convert to 0-1
+  let safeOpacity = 1;
+  if (typeof opacity === "number") {
+    safeOpacity = opacity > 1 ? Math.max(0, Math.min(1, opacity / 100)) : Math.max(0, Math.min(1, opacity));
   }
-  opacity /= 100
-  const red = Number.parseInt(matches[1])
-  const green = Number.parseInt(matches[2])
-  const blue = Number.parseInt(matches[3])
-  // If alpha is present in input, multiply by opacity; otherwise, use opacity only
-  const inputAlpha = matches[4] !== undefined ? Number.parseFloat(matches[4]) : 1
-  const alpha = inputAlpha * opacity
 
-  const newColor = `rgba(${red}, ${green}, ${blue}, ${alpha})`
-  return newColor
+  if (!color || typeof color !== "string" || color.trim() === "") {
+    return `rgba(0, 0, 0, ${safeOpacity})`;
+  }
+  if (color === "transparent") return "transparent";
+
+  const matches = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d*\.?\d+))?\)$/);
+  if (!matches) {
+    return `rgba(0, 0, 0, ${safeOpacity})`;
+  }
+
+  const red = Number.parseInt(matches[1]);
+  const green = Number.parseInt(matches[2]);
+  const blue = Number.parseInt(matches[3]);
+  const inputAlpha = matches[4] !== undefined ? Number.parseFloat(matches[4]) : 1;
+  const alpha = inputAlpha * safeOpacity;
+
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
 export function inSelectedCorner(

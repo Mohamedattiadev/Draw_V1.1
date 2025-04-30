@@ -5,13 +5,13 @@ import {
   Circle,
   Line,
   Rectangle,
-  Selection,
   Diamond,
-  Hand,
-  Lock,
   Arrow,
   TextIcon,
-} from "@/components/icons";
+  Hand,
+  Lock,
+  Selection,
+} from "../client/src/assets/icons";
 import {
   BACKGROUND_COLORS,
   STROKE_COLORS,

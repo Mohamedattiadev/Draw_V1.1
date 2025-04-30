@@ -149,11 +149,7 @@ export default function useCanvas() {
       return;
     }
 
-    if (
-      selectedTool !== "selection" &&
-      selectedTool !== "hand" &&
-      selectedTool !== "lock"
-    ) {
+    if (!["selection", "hand", "lock"].includes(selectedTool)) {
       setAction("draw");
       const element = createElement(
         clientX,
@@ -161,7 +157,10 @@ export default function useCanvas() {
         clientX,
         clientY,
         style,
-        selectedTool
+        selectedTool as Exclude<
+          typeof selectedTool,
+          "selection" | "hand" | "lock"
+        >
       );
       setElements((prevState) => [...prevState, element]);
     }
@@ -253,7 +252,8 @@ export default function useCanvas() {
     lockUI(false);
 
     if (event.clientX === mouseAction.x && event.clientY === mouseAction.y) {
-      setElements("prevState");
+      // Undo to previous state if mouse up without movement
+      undo();
       return;
     }
 
@@ -339,7 +339,7 @@ export default function useCanvas() {
       const { key, ctrlKey, metaKey, shiftKey } = event;
       const prevent = () => event.preventDefault();
       if (selectedElement) {
-        if (key === "Backspace" || key === "Delete") {
+        if (key === "Delete") {
           prevent();
           deleteElement(selectedElement, setElements, setSelectedElement);
         }
@@ -454,20 +454,23 @@ export default function useCanvas() {
       if (isEditing && selectedElement?.tool === "text") {
         if (event.key === "Enter") {
           setIsEditing(false);
-          updateElement(
-            selectedElement.id,
-            { text: textInput },
-            setElements,
-            elements,
-            true
-          );
+          setSelectedTool("selection");
+          if (textInput.trim() === "") {
+            deleteElement(selectedElement, setElements, setSelectedElement);
+            setSelectedElement(null);
+          } else {
+            updateElement(
+              selectedElement.id,
+              { text: textInput },
+              setElements,
+              elements,
+              true
+            );
+            setSelectedElement(selectedElement);
+          }
         } else if (event.key === "Escape") {
           setIsEditing(false);
           setTextInput("");
-        } else if (event.key === "Backspace") {
-          setTextInput((prev) => prev.slice(0, -1));
-        } else if (event.key.length === 1) {
-          setTextInput((prev) => prev + event.key);
         }
       }
     };
@@ -475,6 +478,17 @@ export default function useCanvas() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isEditing, selectedElement, textInput, elements, setElements]);
+
+  // Add double-click handler for editing text
+  const handleDoubleClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const { clientX, clientY } = mousePosition(event);
+    const element = getElementPosition(clientX, clientY, elements);
+    if (element && element.tool === "text") {
+      setSelectedElement(element);
+      setIsEditing(true);
+      setTextInput(element.text || "");
+    }
+  };
 
   return {
     canvasRef,
@@ -487,5 +501,6 @@ export default function useCanvas() {
     textInput,
     setTextInput,
     selectedElement,
+    handleDoubleClick,
   };
 }
