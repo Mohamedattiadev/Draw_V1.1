@@ -297,13 +297,19 @@ export const Github = () => (
   </svg>
 )
 
-export const TextIcon = () => (
+export const TextIcon = ({ size = 24 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    height={demention}
-    fill="currentColor"
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
+    fill="currentColor"
   >
-    <path d="M4 4h16v2H4V4zm0 4h16v2H4V8zm0 4h16v2H4v-2zm0 4h16v2H4v-2z" />
+    <text x="5" y="17" fontSize="11" fontFamily="Arial" fontWeight="normal">
+      A
+    </text>
+    <text x="14" y="17" fontSize="11" fontFamily="Arial">
+      a
+    </text>
   </svg>
-)
+);

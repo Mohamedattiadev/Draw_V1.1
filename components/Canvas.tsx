@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import useCanvas from "@/hooks/useCanvas";
 import { Input } from "@/components/ui/input";
+import { useAppContext } from "@/providers/AppStates";
 
 export default function Canvas() {
   const [isMounted, setIsMounted] = useState(false);
@@ -19,6 +20,9 @@ export default function Canvas() {
     selectedElement,
     handleDoubleClick,
   } = useCanvas();
+
+  // Get scale and translate from context
+  const { scale, translate, scaleOffset } = useAppContext();
 
   // Store the editing position when editing starts
   const editingPosRef = useRef<{
@@ -102,11 +106,20 @@ export default function Canvas() {
     return null;
   }
 
-  // Calculate input position
+  // Calculate input position with transformations
   const pos = editingPosRef.current
-    ? { left: editingPosRef.current.left, top: editingPosRef.current.top }
+    ? {
+        left:
+          editingPosRef.current.left * scale +
+          translate.x * scale -
+          scaleOffset.x,
+        top:
+          editingPosRef.current.top * scale +
+          translate.y * scale -
+          scaleOffset.y,
+      }
     : { left: 0, top: 0 };
-  const fontSize = editingPosRef.current?.fontSize || 16;
+  const fontSize = (editingPosRef.current?.fontSize || 16) * scale;
   const fontFamily = editingPosRef.current?.fontFamily || "Arial";
   const fontWeight = editingPosRef.current?.fontWeight || "normal";
 
@@ -122,6 +135,7 @@ export default function Canvas() {
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
         onDoubleClick={handleDoubleClick}
+        onContextMenu={(e) => e.preventDefault()}
       />
       {isEditing && (
         <AutoWidthInput

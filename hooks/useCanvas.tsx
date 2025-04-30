@@ -77,6 +77,11 @@ export default function useCanvas() {
   };
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    // Prevent context menu on right click
+    if (event.button === 2) {
+      event.preventDefault();
+    }
+
     const { clientX, clientY } = mousePosition(event);
     lockUI(true);
 
@@ -114,13 +119,16 @@ export default function useCanvas() {
       return;
     }
 
-    if (keys.has(" ") || selectedTool === "hand" || event.button === 1) {
+    // Handle right-click or hand tool
+    if (keys.has(" ") || selectedTool === "hand" || event.button === 2) {
       setTranslate((prevState) => ({
         ...prevState,
         sx: clientX,
         sy: clientY,
       }));
       setAction("translate");
+      // Temporarily set cursor to grabbing
+      document.documentElement.style.setProperty("--canvas-cursor", "grabbing");
       return;
     }
 
@@ -280,7 +288,36 @@ export default function useCanvas() {
 
   const handleWheel = (event: React.WheelEvent<HTMLCanvasElement>) => {
     if (event.ctrlKey) {
-      onZoom(event.deltaY * -0.01);
+      event.preventDefault();
+      const delta = event.deltaY * -0.01;
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+
+      // Calculate mouse position relative to canvas
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const mouseXRelative = mouseX - rect.left;
+      const mouseYRelative = mouseY - rect.top;
+
+      // Calculate mouse position in canvas coordinates
+      const mouseXCanvas =
+        (mouseXRelative - translate.x * scale + scaleOffset.x) / scale;
+      const mouseYCanvas =
+        (mouseYRelative - translate.y * scale + scaleOffset.y) / scale;
+
+      // Apply zoom
+      const newScale = minmax(scale + delta, [0.1, 20]);
+      const scaleFactor = newScale / scale;
+
+      // Adjust translation to keep mouse position fixed
+      setTranslate((prevState) => ({
+        ...prevState,
+        x: prevState.x - mouseXCanvas * (scaleFactor - 1),
+        y: prevState.y - mouseYCanvas * (scaleFactor - 1),
+      }));
+
+      onZoom(delta);
       return;
     }
 
