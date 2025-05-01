@@ -1,4 +1,4 @@
-import { DashedLine, DottedLine, SolidLine } from "@/components/icons"
+import { DashedLine, DottedLine, SolidLine } from "../client/src/assets/icons"
 import type { StrokeStyle } from "@/types"
 
 export const BACKGROUND_COLORS = [

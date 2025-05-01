@@ -1,22 +1,8 @@
-<h1 align="center">
-	<a href="https://sketchflow.vercel.app/">
-		SketchFlow
-	</a>
-</h1>
+
 
 <h4 align="center">
   SketchFlow is a collaborative drawing tool built with React and Vite, Express, and Socket.IO, designed for creating diagrams, sketches, and illustrations in real-time.
 </h4>
-
-<p align="center">
-	<a href="https://sketchflow.vercel.app/">Live demo</a>
-	•
-	<a href="https://github.com/zakaria-tl/sketchflow/archive/refs/heads/main.zip">Download</a>
-</p>
-
-<div align="center">
-	<img src="https://res.cloudinary.com/zakaria-touil-ml/image/upload/v1710945834/sketchflow/ybajo3eztdl1fl2cysjo.png" />
-</div>
 
 ## Features
 

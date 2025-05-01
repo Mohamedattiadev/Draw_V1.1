@@ -356,3 +356,52 @@ export const Github = () => (
     <path d="M9.25 19.503c-5 1.498-5-2.496-7-2.996" />
   </svg>
 );
+export const Linkedin = () => (
+  <svg
+    height={demention}
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    viewBox="0 0 24 24"
+  >
+    <path d="M16 8a6 6 0 0 1 6 6v8h-4v-8a2 2 0 0 0-4 0v8h-4v-8a6 6 0 0 1 6-6z" />
+    <rect x="2" y="9" width="4" height="12" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+);
+
+export const Website = () => (
+  <svg
+    height={demention}
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    viewBox="0 0 24 24"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M2 12h20" />
+    <path d="M12 2a15.3 15.3 0 0 1 0 20" />
+    <path d="M12 2a15.3 15.3 0 0 0 0 20" />
+  </svg>
+);
+
+export const TextIcon = ({ size = 34 }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <text x="5" y="17" fontSize="10" fontFamily="Arial" fontWeight="normal">
+      A
+    </text>
+    <text x="13" y="17" fontSize="10" fontFamily="Arial">
+      a
+    </text>
+  </svg>
+);

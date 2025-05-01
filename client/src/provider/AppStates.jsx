@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { Circle, Line, Rectangle, Selection, Diamond, Hand, Lock, Arrow } from "../assets/icons"
+import { Circle, Line, Rectangle, Selection, Diamond, Hand, Lock, Arrow, TextIcon } from "../assets/icons"
 import { BACKGROUND_COLORS, STROKE_COLORS, STROKE_STYLES } from "../global/var"
 import { getElementById, minmax } from "../helper/element"
 import useHistory from "../hooks/useHistory"
@@ -119,6 +119,12 @@ export function AppContextProvider({ children }) {
         slug: "line",
         icon: Line,
         title: "Line",
+        toolAction,
+      },
+      {
+        slug: "text",
+        icon: TextIcon,
+        title: "Text",
         toolAction,
       },
     ],

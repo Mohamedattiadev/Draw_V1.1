@@ -1,12 +1,12 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Xmark } from "../assets/icons"
+import { Xmark } from "../client/src/assets/icons"
 import { useState } from "react"
-import { useAppContext } from "../provider/AppStates"
+import { useAppContext } from "../client/src/provider/AppStates"
 import { v4 as uuid } from "uuid"
 import { useSearchParams } from "react-router-dom"
-import { socket } from "../api/socket"
+import { socket } from "../client/src/api/socket"
 
 export default function Collaboration() {
   const [searchParams, setSearchParams] = useSearchParams()
