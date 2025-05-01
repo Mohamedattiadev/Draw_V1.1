@@ -1,41 +1,41 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { motion } from "framer-motion"
-import { Xmark } from "./icons"
-import { useState } from "react"
-import { useAppContext } from "@/providers/AppStates"
-import { v4 as uuid } from "uuid"
-import { useSearchParams, useRouter } from "next/navigation"
-import { socket } from "@/lib/socket"
+import { motion } from "framer-motion";
+import { Xmark } from "./icons/index";
+import { useState } from "react";
+import { useAppContext } from "@/providers/AppStates";
+import { v4 as uuid } from "uuid";
+import { useSearchParams, useRouter } from "next/navigation";
+import { socket } from "@/lib/socket";
 
 export default function Collaboration() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const { session, setSession } = useAppContext()
-  const [open, setOpen] = useState(false)
-  const users = 0
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { session, setSession } = useAppContext();
+  const [open, setOpen] = useState(false);
+  const users = 0;
 
   const startSession = () => {
-    const sessionId = uuid()
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("room", sessionId)
-    router.push(`/?${params.toString()}`)
-    setSession(sessionId)
-    socket.emit("join", sessionId)
-  }
+    const sessionId = uuid();
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("room", sessionId);
+    router.push(`/?${params.toString()}`);
+    setSession(sessionId);
+    socket.emit("join", sessionId);
+  };
 
   const endSession = () => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete("room")
-    router.push(`/?${params.toString()}`)
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("room");
+    router.push(`/?${params.toString()}`);
     if (session) {
-      socket.emit("leave", session)
+      socket.emit("leave", session);
     }
-    setSession(null)
-    setOpen(false)
-  }
+    setSession(null);
+    setOpen(false);
+  };
 
   return (
     <div className="collaboration">
@@ -50,15 +50,19 @@ export default function Collaboration() {
 
       {open && (
         <CollabBox collabState={[open, setOpen]}>
-          {session ? <SessionInfo endSession={endSession} /> : <CreateSession startSession={startSession} />}
+          {session ? (
+            <SessionInfo endSession={endSession} />
+          ) : (
+            <CreateSession startSession={startSession} />
+          )}
         </CollabBox>
       )}
     </div>
-  )
+  );
 }
 
 interface CreateSessionProps {
-  startSession: () => void
+  startSession: () => void;
 }
 
 function CreateSession({ startSession }: CreateSessionProps) {
@@ -68,25 +72,25 @@ function CreateSession({ startSession }: CreateSessionProps) {
       <div>
         <p>Invite people to collaborate on your drawing.</p>
         <p>
-          Don't worry, the session is end-to-end encrypted, and fully private. Not even our server can see what you
-          draw.
+          Don't worry, the session is end-to-end encrypted, and fully private.
+          Not even our server can see what you draw.
         </p>
       </div>
       <button onClick={startSession}>Start session</button>
     </div>
-  )
+  );
 }
 
 interface SessionInfoProps {
-  endSession: () => void
+  endSession: () => void;
 }
 
 function SessionInfo({ endSession }: SessionInfoProps) {
   const copy = () => {
     if (typeof navigator !== "undefined") {
-      navigator.clipboard.writeText(window.location.href)
+      navigator.clipboard.writeText(window.location.href);
     }
-  }
+  };
 
   return (
     <div className="collabInfo">
@@ -95,7 +99,12 @@ function SessionInfo({ endSession }: SessionInfoProps) {
       <div className="collabGroup">
         <label htmlFor="collabUrl">Link</label>
         <div className="collabLink">
-          <input id="collabUrl" type="url" value={typeof window !== "undefined" ? window.location.href : ""} disabled />
+          <input
+            id="collabUrl"
+            type="url"
+            value={typeof window !== "undefined" ? window.location.href : ""}
+            disabled
+          />
           <button type="button" onClick={copy}>
             Copy link
           </button>
@@ -107,17 +116,17 @@ function SessionInfo({ endSession }: SessionInfoProps) {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 interface CollabBoxProps {
-  collabState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-  children: React.ReactNode
+  collabState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  children: React.ReactNode;
 }
 
 function CollabBox({ collabState, children }: CollabBoxProps) {
-  const [, setOpen] = collabState
-  const exit = () => setOpen(false)
+  const [, setOpen] = collabState;
+  const exit = () => setOpen(false);
 
   return (
     <div className="collaborationContainer">
@@ -141,5 +150,5 @@ function CollabBox({ collabState, children }: CollabBoxProps) {
         {children}
       </motion.section>
     </div>
-  )
+  );
 }

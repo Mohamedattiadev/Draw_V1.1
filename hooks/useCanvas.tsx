@@ -421,9 +421,6 @@ export default function useCanvas() {
         } else if (key.toLowerCase() === "z") {
           prevent();
           undo();
-        } else if (key.toLowerCase() === "s") {
-          prevent();
-          // saveElements(elements);
         } else if (key.toLowerCase() === "o") {
           prevent();
           uploadElements(setElements);
