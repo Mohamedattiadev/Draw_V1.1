@@ -48,4 +48,15 @@ export function deleteSavedCanvas(id: string): void {
   const savedCanvases = getSavedCanvases()
   const updatedCanvases = savedCanvases.filter((canvas) => canvas.id !== id)
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCanvases))
+}
+
+export function updateSavedCanvas(id: string, elements: Element[]): void {
+  if (typeof window === "undefined") return;
+  const savedCanvases = getSavedCanvases();
+  const idx = savedCanvases.findIndex((c) => c.id === id);
+  if (idx !== -1) {
+    savedCanvases[idx].elements = elements;
+    savedCanvases[idx].timestamp = Date.now();
+    localStorage.setItem("saved_canvases", JSON.stringify(savedCanvases));
+  }
 } 

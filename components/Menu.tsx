@@ -1,16 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Delete, Download, Folder, MenuIcon, Xmark, Save } from "./icons/index";
 import { useAppContext } from "@/providers/AppStates";
 import { saveElements, uploadElements } from "@/utils/element";
-import { saveCanvas } from "@/utils/savedCanvases";
+import { saveCanvas, updateSavedCanvas } from "@/utils/savedCanvases";
 import SavedCanvases from "./SavedCanvases";
 
 export default function Menu() {
-  const { elements, setElements } = useAppContext();
+  const { elements, setElements, currentSavedCanvasId } = useAppContext();
   const [show, setShow] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        if (currentSavedCanvasId) {
+          updateSavedCanvas(currentSavedCanvasId, elements);
+        } else {
+          // fallback to normal save
+          saveElements(elements);
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentSavedCanvasId, elements]);
 
   return (
     <div className="menu">

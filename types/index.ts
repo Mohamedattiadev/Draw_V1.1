@@ -115,6 +115,8 @@ export interface AppContextType {
   redo: () => void
   session: string | null
   setSession: (session: string | null) => void
+  currentSavedCanvasId: string | null
+  setCurrentSavedCanvasId: (id: string | null) => void
 }
 
 export interface AppContextProviderProps {

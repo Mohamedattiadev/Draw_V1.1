@@ -6,8 +6,10 @@ import {
   getSavedCanvases,
   loadCanvas,
   deleteSavedCanvas,
+  updateSavedCanvas,
 } from "@/utils/savedCanvases";
 import type { Element } from "@/types";
+import { useAppContext } from "@/providers/AppStates";
 
 interface SavedCanvasesProps {
   setElements: (elements: Element[]) => void;
@@ -25,6 +27,8 @@ export default function SavedCanvases({
       timestamp: number;
     }>
   >([]);
+  const { currentSavedCanvasId, setCurrentSavedCanvasId, elements } =
+    useAppContext();
 
   useEffect(() => {
     const canvases = getSavedCanvases();
@@ -35,6 +39,7 @@ export default function SavedCanvases({
     const elements = loadCanvas(id);
     if (elements) {
       setElements(elements);
+      setCurrentSavedCanvasId(id);
       setShow(false);
     }
   };
@@ -43,6 +48,14 @@ export default function SavedCanvases({
     e.stopPropagation();
     deleteSavedCanvas(id);
     setSavedCanvases((prev) => prev.filter((canvas) => canvas.id !== id));
+    if (currentSavedCanvasId === id) setCurrentSavedCanvasId(null);
+  };
+
+  const handleUpdate = () => {
+    if (currentSavedCanvasId) {
+      updateSavedCanvas(currentSavedCanvasId, elements);
+      // Optionally, show a toast or feedback
+    }
   };
 
   if (savedCanvases.length === 0) {
@@ -56,7 +69,9 @@ export default function SavedCanvases({
       {savedCanvases.map((canvas) => (
         <div
           key={canvas.id}
-          className="flex items-center justify-between p-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors duration-200 cursor-pointer shadow-sm"
+          className={`flex items-center justify-between p-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors duration-200 cursor-pointer shadow-sm ${
+            currentSavedCanvasId === canvas.id ? "ring-2 ring-blue-400" : ""
+          }`}
           onClick={() => handleLoad(canvas.id)}
         >
           <div>
@@ -83,6 +98,14 @@ export default function SavedCanvases({
           </button>
         </div>
       ))}
+      {currentSavedCanvasId && (
+        <button
+          className="w-full mt-2 py-2 px-4 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition"
+          onClick={handleUpdate}
+        >
+          Update This Canvas
+        </button>
+      )}
     </div>
   );
 }

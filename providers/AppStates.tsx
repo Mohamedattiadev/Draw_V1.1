@@ -77,6 +77,9 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
     fill: BACKGROUND_COLORS[0],
     opacity: 100,
   });
+  const [currentSavedCanvasId, setCurrentSavedCanvasId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     if (session === null && typeof window !== "undefined") {
@@ -204,6 +207,8 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
         redo,
         session,
         setSession,
+        currentSavedCanvasId,
+        setCurrentSavedCanvasId,
       }}
     >
       {children}
