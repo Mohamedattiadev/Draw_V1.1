@@ -405,3 +405,37 @@ export const TextIcon = ({ size = 34 }) => (
     </text>
   </svg>
 );
+
+export const Save = () => (
+  <svg
+    height={demention}
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    viewBox="0 0 24 24"
+  >
+    <path d="M19 11v2H5v-2" />
+    <path d="M19 11v2H5v-2" />
+    <path d="M19 11v2H5v-2" />
+    <path d="M19 11v2H5v-2" />
+    <path d="M19 11v2H5v-2" />
+    <path d="M19 11v2H5v-2" />
+  </svg>
+);
+
+export const Clock = () => (
+  <svg
+    height={demention}
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    viewBox="0 0 24 24"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v6l4 4" />
+  </svg>
+);

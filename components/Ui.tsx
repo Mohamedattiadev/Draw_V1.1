@@ -1,14 +1,14 @@
-import { useAppContext } from "@/providers/AppStates"
-import Style from "./Style"
-import ToolBar from "./ToolBar"
-import Zoom from "./Zoom"
-import UndoRedo from "./UndoRedo"
-import Menu from "./Menu"
-import Collaboration from "./Collaboration"
-import Credits from "./Credits"
+import { useAppContext } from "@/providers/AppStates";
+import Style from "./Style";
+import ToolBar from "./ToolBar";
+import Zoom from "./Zoom";
+import UndoRedo from "./UndoRedo";
+import Menu from "./Menu";
+import Collaboration from "./Collaboration";
+import Credits from "./Credits";
 
 export default function Ui() {
-  const { selectedElement, selectedTool, style } = useAppContext()
+  const { selectedElement, selectedTool, style } = useAppContext();
 
   return (
     <main className="ui">
@@ -31,5 +31,5 @@ export default function Ui() {
         </div>
       </footer>
     </main>
-  )
+  );
 }

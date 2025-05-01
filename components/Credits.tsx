@@ -1,4 +1,4 @@
-import { Github, Linkedin, Website } from "./icons";
+import { Github, Linkedin, Website } from "./icons/index";
 
 export default function Credits() {
   return (

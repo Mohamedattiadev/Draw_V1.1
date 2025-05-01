@@ -14,7 +14,14 @@ import {
   STROKE_COLORS,
   STROKE_STYLES,
 } from "@/lib/constants";
-import { Backward, Delete, Duplicate, Forward, ToBack, ToFront } from "./icons";
+import {
+  Backward,
+  Delete,
+  Duplicate,
+  Forward,
+  ToBack,
+  ToFront,
+} from "./icons/index";
 import type { Element, Style as StyleType } from "@/types";
 
 interface StyleProps {

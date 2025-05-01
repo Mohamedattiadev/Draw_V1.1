@@ -33,7 +33,10 @@ html {
   --bg-size: 14px;
 
   position: relative;
-  background: radial-gradient(var(--secondary-background) 10%, var(--background) 0);
+  background: radial-gradient(
+    var(--secondary-background) 10%,
+    var(--background) 0
+  );
   background-size: var(--bg-size) var(--bg-size);
   background-repeat: repeat;
 
@@ -316,6 +319,7 @@ div.menu .menuItems {
   width: 250px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 div.menu .menuItems .menuItem * {
