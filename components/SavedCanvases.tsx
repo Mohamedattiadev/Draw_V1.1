@@ -32,7 +32,9 @@ export default function SavedCanvases({
 
   useEffect(() => {
     const canvases = getSavedCanvases();
-    setSavedCanvases(canvases);
+    // Sort canvases by timestamp in descending order (newest first)
+    const sortedCanvases = canvases.sort((a, b) => b.timestamp - a.timestamp);
+    setSavedCanvases(sortedCanvases);
   }, []);
 
   const handleLoad = (id: string) => {
